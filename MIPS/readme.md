@@ -4,7 +4,7 @@
 <br>
 
 ## Compiler
-I used (MARS)[https://dpetersanderson.github.io/download.html] a java based MIPS compiler
+I used [MARS](https://dpetersanderson.github.io/download.html) a java based MIPS compiler
 
 <br>
 
