@@ -17,4 +17,3 @@ I used [MARS](https://dpetersanderson.github.io/download.html) a java based MIPS
         - an outer loop (regiter `$t1`) and an inner loop (register `$t2`)
         - each inner loop compares `arr[j]` and `arr[j+1]`, and swaps if needed
         - On each outer loop iteration, the largest/smallest element "bubbles" to its correct position
-    - The print function is currently broken
