@@ -48,7 +48,7 @@ main:
     la   $a1, array      # array pointer
     lw   $a2, array_size # array size
     jal print_array
-    
+   
     # ##########
     # Exit
     li $v0, 10
@@ -137,11 +137,11 @@ print_array:
     li   $v0, 4
     syscall
 
-    li   $t0, 0          # index i = 0
-    move $s0, $a0        # save array pointer (base) into $s0
+    li   $t0, 0           # int i = 0 (used as index)
+    move $s0, $a1         # save array pointer (base) into $s0
 
 print_loop:
-    bge  $t0, $a1, end_print
+    bge  $t0, $a2, end_print # if (i > size) -> goto::end_print
 
     # Load value at arr[i]
     mul  $t1, $t0, 4     # offset = i * 4
@@ -149,10 +149,11 @@ print_loop:
     lw   $a0, 0($t1)
     li   $v0, 1          # print_int
     syscall
+    addi $t0, $t0, 1     # i++
 
     # Print comma and space if not the last element
-    addi $t2, $t0, 1
-    blt  $t2, $a1, print_comma
+    addi $t2, $t0, 1           # $t2 = i + 1
+    ble  $t2, $a1, print_comma # if (i + 1 <= size) -> print_comma
 
     j no_comma
 
@@ -160,16 +161,15 @@ print_comma:
     la   $a0, comma_space
     li   $v0, 4
     syscall
-
-no_comma:
-    addi $t0, $t0, 1
     j    print_loop
-
-end_print:
+    
+no_comma:
     # Print newline
     la   $a0, newline
     li   $v0, 4
     syscall
+
+end_print:
 
     # Epilogue
     lw   $ra, 4($sp)
