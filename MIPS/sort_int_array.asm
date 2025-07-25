@@ -122,7 +122,6 @@ done:
 
 
 # === print_array ===
-# Prints a prefix followed by an array of integers separated by commas
 # Input:
 #   $a0 = prefix string
 #   $a1 = array pointer
@@ -137,42 +136,52 @@ print_array:
     li   $v0, 4
     syscall
 
-    li   $t0, 0           # int i = 0 (used as index)
-    move $s0, $a1         # save array pointer (base) into $s0
+    li   $t0, 0          # i = 0
+    move $s0, $a1        # $s0 = base address of array
 
 print_loop:
-    bge  $t0, $a2, end_print # if (i > size) -> goto::end_print
+    bge  $t0, $a2, end_print
 
-    # Load value at arr[i]
-    mul  $t1, $t0, 4     # offset = i * 4
-    add  $t1, $s0, $t1   # address = base + offset
-    lw   $a0, 0($t1)
-    li   $v0, 1          # print_int
+    # Load arr[i] into $t3 and print it
+    mul  $t1, $t0, 4
+    add  $t1, $s0, $t1
+    lw   $t3, 0($t1)     # store value in $t3
+    move $a0, $t3
+    li   $v0, 1
     syscall
-    addi $t0, $t0, 1     # i++
 
-    # Print comma and space if not the last element
-    addi $t2, $t0, 1           # $t2 = i + 1
-    ble  $t2, $a1, print_comma # if (i + 1 <= size) -> print_comma
+    # Check if this is the last element
+    addi $t5, $t0, 1
+    bge  $t5, $a2, print_newline  # if i+1 >= size, skip comma
 
-    j no_comma
-
-print_comma:
+    # Print comma-space
     la   $a0, comma_space
     li   $v0, 4
     syscall
+
+    # If printed value < 10, print extra space
+    li   $t4, 10
+    blt  $t3, $t4, print_align_space
+
+skip_align_space:
+    addi $t0, $t0, 1
     j    print_loop
-    
-no_comma:
-    # Print newline
+
+print_align_space:
+    la   $a0, space
+    li   $v0, 4
+    syscall
+    j skip_align_space
+
+print_newline:
     la   $a0, newline
     li   $v0, 4
     syscall
 
 end_print:
-
     # Epilogue
     lw   $ra, 4($sp)
     lw   $s0, 0($sp)
     addi $sp, $sp, 8
     jr   $ra
+
