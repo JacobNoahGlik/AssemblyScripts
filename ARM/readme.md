@@ -15,3 +15,21 @@ This installs:
 arm-linux-gnueabi-gcc -static -o square.elf square.s
 qemu-arm ./square.elf
 ```
+
+### Compile and run the calculator the same way:
+```
+arm-linux-gnueabi-gcc -static -o calculator.elf calculator.s
+qemu-arm ./calculator.elf
+```
+This is what it should look like:
+```
+/arm# qemu-arm ./calculator.elf
+> 9 + 7
+       = 16
+> 26/13
+       = 2
+> 91 * 46 - 300
+               = 3886
+>
+/arm# 
+```
