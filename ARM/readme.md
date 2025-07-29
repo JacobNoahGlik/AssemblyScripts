@@ -25,11 +25,11 @@ This is what it should look like:
 ```
 /arm# qemu-arm ./calculator.elf
 > 9 + 7
-       = 16
+        = 16
 > 26/13
-       = 2
+        = 2
 > 91 * 46 - 300
-               = 3886
+                = 3886
 >
 /arm# 
 ```
