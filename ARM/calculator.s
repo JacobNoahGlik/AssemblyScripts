@@ -4,7 +4,7 @@
 .data
 prompt:     .asciz "> "
 input_buf:  .space 128
-result_fmt: .asciz "= %d\n"
+result_fmt: .asciz " = %d\n"
 newline:    .asciz "\n"
 hello_msg:  .asciz "Hello, world!\n"
 debug_fmt: .asciz "\nr0=%d r1=%d r2=%d r3=%d r4=%d\n"
