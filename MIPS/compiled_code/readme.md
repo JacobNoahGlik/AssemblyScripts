@@ -310,5 +310,44 @@ Notes:
 
 
 
+<br>
+
+<br>
+
+<br>
+
+## Realocation Macros:
+
+In compiled code, you'll see a lot of reallocation macros when calling a function or loading large values (16-bit+) into a register.
+
+| Macro               | Meaning                                                                      |
+| ------------------- | ---------------------------------------------------------------------------- |
+| `%hi(symbol)`       | Upper 16 bits of symbol’s address (for use with `lui`)                       |
+| `%lo(symbol)`       | Lower 16 bits of symbol’s address (used after `lui`)                         |
+| `%got(symbol)`      | Offset to symbol’s address **in the GOT** (Global Offset Table)              |
+| `%call16(symbol)`   | Address of external function **via GOT**, used with `jalr`                   |
+| `%gp_rel(symbol)`   | Offset of symbol **relative to `$gp`**, for fast data access                 |
+| `%hiadj(symbol)`    | Like `%hi`, but adjusts for negative `%lo` overflow (rarely needed manually) |
+| `%tlsgd(symbol)`    | Thread-local storage (TLS) GOT entry (used in multithreaded code)            |
+| `%tlsldm(symbol)`   | TLS local dynamic model (also threading-related)                             |
+| `%got_disp(symbol)` | Like `%got`, used in newer ABI models                                        |
+
+<br>
+
+`%hi` and `%lo` (not to be confused with `$hi` and `$lo`) are usually used in tandem when copying a value larger than 16 bits into a 32-bit register as instructions like `addiu`, `lw`, `ori`, etc... are only capable of moving 16 bits. To copy all 32 bits of a larger pointer (like one from the `$gp` table) you'd need to do it in two steps:
+```asm
+lui  $t0, %hi(symbol)        # upper 16 bits
+addiu $t0, $t0, %lo(symbol)  # lower 16 bits
+```
+
+`%got` and `%call16` are the next most common, used when accessing library / external functions like `printf`, `malloc`, etc. Sample usage:
+```asm
+lw   $t0, %got(counter)($gp)     # Loads address of counter into $t0
+lw   $v0, 0($t0)                 # Loads value of counter
+```
+```asm
+lw   $t9, %call16(malloc)($gp)   # Load address of malloc into $t9
+jalr $t9                         # Call it
+```
 
 
